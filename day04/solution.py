@@ -33,41 +33,32 @@ def checkForXMAS(row, col, puzzle, reversed):
         try:
             vert.append(puzzle[row][dirs[1]])
         except (IndexError, TypeError):
-            # print("indexerror")
             pass
         try:
             horz.append(puzzle[dirs[0]][col])
         except (IndexError, TypeError):
-            # print("indexerror")
             pass
         try:
             diagu.append(puzzle[dirs[0]][dirs[1]])
         except (IndexError, TypeError):
-            # print("indexerror")
             pass
         try:
             diagd.append(puzzle[dirs[0]][dirs[2]])
         except (IndexError, TypeError):
-            # print("indexerror")
             pass
         if col == 5 and row == 0:
             print(diagu, diagd, vert, horz)
     for direction in [vert, horz, diagu, diagd]:
         if ''.join(direction) == expected:
             found += 1
-    # if col==1 and row==9:
-    # print(vert, horz, diagu, diagd)
     return found
 
 def part2():
     found = 0
     for row in range(len(puzzle)):
         for col in range(len(puzzle[row])):
-            # temp=found
             if puzzle[row][col] == "A":
                 found += checkForX_MAS(row, col, puzzle)
-            # if not found == temp:
-            #     print(f"({row}, {col}, {found})")
     return found
 
 
@@ -85,13 +76,10 @@ def getLetter(puzzle, row, col):
 
 def checkForX_MAS(row, col, puzzle):
 
-    a = puzzle[row][col]
     lu = getLetter(puzzle, row-1, col-1)
     ld = getLetter(puzzle, row-1, col+1)
     ru = getLetter(puzzle, row+1, col-1)
     rd = getLetter(puzzle, row+1, col+1)
-    # if(row == 4 and col == 4):
-    #     print(lu, ld, ru, rd)
 
     if ((lu == 'M' and rd == 'S') or (lu == 'S' and rd == 'M')) and ((ld == 'M' and ru == 'S') or (ld == 'S' and ru == 'M')):
         return 1

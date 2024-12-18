@@ -1,7 +1,7 @@
 orderings = {}
 updates = []
 
-with open('test.txt') as file:
+with open('input.txt') as file:
     switch = False
     for line in file:
         if line == '\n':
@@ -21,17 +21,12 @@ print("order: ",orderings)
 
 def checkIfAfter(index, update, orderings):
     page = update[index]
-    orderingspage = orderings[page]
+    try:
+        orderingspage = orderings[page]
+    except KeyError:
+        return True
     for tocheck in orderingspage:
         if tocheck in update:
-        #     for postpage in range(len(update)-1):
-        #         updatepostpage = update[0+postpage::]
-        #         if tocheck in updatepostpage:
-        #             continue
-        #         else:
-        #             return False
-        # else:
-        #     return False
             update.index(page)
             if tocheck in update[:update.index(page):]:
                 return False
@@ -44,16 +39,27 @@ def fixafter(index, update:list, orderings):
     for tocheck in orderingspage:
         if tocheck in update:
             if tocheck in update[:update.index(page):]:
-                # print("before",update)
-                indexoftecheck = update.index(tocheck)
+                # sla de index van de te veranderen page op
+                indexoftocheck = update.index(tocheck)
+                # Verwijder de te veranderen page
                 update.remove(tocheck)
-                # update.insert(update.index(page)+1 if update.index(page)+1 < len(update)-1 else update.index(page), tocheck)
-                update.insert(indexoftecheck+1, tocheck)
+                # insert de te veranderen page een plek na waar het nu stond
+                inserAfter(update, indexoftocheck, tocheck)
                 # print("after ",update)
 
     return update
 
-
+def inserAfter(update, indexoftocheck, tocheck):
+    flag = False
+    for newindex in range(1, len(update) - indexoftocheck):
+        checkIfValid = update.copy()
+        checkIfValid.insert(indexoftocheck + newindex, tocheck)
+        if checkIfAfter(indexoftocheck + newindex, update, orderings):
+            update.insert(indexoftocheck + newindex, tocheck)
+            flag = True
+            break
+    if not flag:
+            update.append(tocheck)
 def part1():
     valids = {}
     invalids = {}
@@ -69,9 +75,6 @@ def part1():
                     invalids[updatenr]= update
             else:
                 valids[updatenr] += 1
-    # return [(nr, updates[nr]) for nr in valids]
-    # print(valids)
-    # print(set([str(inv) for inv in invalids]))
     print(invalids)
     return [ (index, updates[index])  for index, length in valids.items() if len(updates[index]) == length], invalids
 
@@ -96,13 +99,12 @@ def part2(invalids):
                     valids[updatenr] += 1
                 else:
                     update = fixafter(index, update, orderings)
-                    part2({updatenr:update})
-                    # for rk, rv in part2({updatenr: update}):
-                        # print("for")
-                        # valids[rk] += rv
+                    replace = part2({updatenr:update})
+                    for rk, rv in replace:
+                        invalids[rk] = rv
+                        valids[rk] += 1
             else:
                 valids[updatenr] += 1
-    # print(valids)
     return [ (index, updates[index])  for index, length in valids.items() if len(updates[index]) == length]
 
 print(calculatemid(part1()[0]))
