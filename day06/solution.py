@@ -52,14 +52,11 @@ def move_guard(obstacles, guard_cur, guard_his, dir_org = None):
 
         #End if you reach the limit of the map
         if new_pos[0] < 0 or new_pos[0] >= len(_map) or new_pos[1] < 0 or new_pos[1] >= len(_map):
-            # print("Out of bounds", file=sys.stderr)
             keep_going = False
             continue
 
         # Check of er een loop in zit (zou alleen in part 2 moeten gebeuren)
         if(contains_loop(new_pos, dir_cur, guard_his)):
-            # print("in loop")
-            # print(obstacles, " \n")
             global loop_obstacles
             loop_obstacles.append(obstacles[-1])
             return guard_his
@@ -72,39 +69,28 @@ def move_guard(obstacles, guard_cur, guard_his, dir_org = None):
         # if you reach an obstacle, turn and start moving again
         else:
             dir_cur = dirs.__next__()
-            # print(f"dir_cur = {dir_cur}, pos = ({guard_cur[0]}, {guard_cur[1]})")
-
             move_guard(obstacles, guard_cur, guard_his)
             keep_going = False
     return guard_his
 
 
 
-def part2(obstacles_copy, guard_his_copy, guard_cur):
+def part2(obstacles, guard_his, guard_cur):
     global containing_loop
     containing_loop = 0
 
-    for pos in guard_his_copy:
+    # Brute force: Zet op elke plek van het bewandelde pad (uit part1) een obstakel en kijk of de guard dan in een loop gaat lopen.
+    for pos in guard_his:
         pos_temp = (pos[0], pos[1]) # zonder windrichting
-        obstacles_copy.append(pos_temp)
+        obstacles.append(pos_temp)
         dirs = cycle(['n', 'e', 's', 'w'])  # Wrapping iterator voor alle windrichtingen
         global dir_cur
-        dir_cur = dirs.__next__()
-        guard_his_return = move_guard(obstacles_copy, guard_cur, [])
+        dir_cur = dirs.__next__() # Reset de dir naar de startpositie 'n'
+        guard_his_return = move_guard(obstacles, guard_cur, []) # Laat de guard de ronde lopen met een extra obstakel
 
-        # try:
-        #     guard_his_return = move_guard(obstacles_copy, guard_cur, [])
-        # except RecursionError as e:
-        #     print(e)
-        #     pass
+        obstacles.remove(pos_temp)
 
-        obstacles_copy.remove(pos_temp)
-    # part2(obstacles_copy, guard_his_copy, guard_cur)
-
-
-        # if contains_loop():
-        #     containing_loop += 1
-    print("part2: ", containing_loop)
+    return containing_loop
 
 def contains_loop(pos, dir, his):
     global containing_loop
@@ -119,7 +105,8 @@ def contains_loop(pos, dir, his):
 obstacles, guard_cur = init()
 len_his, obst, his = part1(obstacles, guard_cur)
 print("The answer to part 1 = ", len_his)
-part2( obstacles, his, guard_cur)
+part2_ans = part2( obstacles, his, guard_cur)
+print("The answer to part 2 = ", part2_ans)
 print(loop_obstacles)
 
 
