@@ -1,9 +1,8 @@
-import sys
 
+import sys
 total = 0
 SUM = True
 MULT = False
-
 
 # check of het eerste getal + 0 en * 0
 # check dan of het tweede getal plus de uitkomst kan
@@ -13,7 +12,6 @@ MULT = False
 # Als er eentje groter is dan het beoogde antwoord, dan return None
 def equate(index, parts, expected, cum):
     result = cum
-
     # Als de index te out of scope van parts is, gaan we niet verder
     if index > len(parts)-1:
         if cum != expected:
@@ -24,12 +22,9 @@ def equate(index, parts, expected, cum):
     # als het goed is is het goed
     if cum==expected:
         return cum
-
     sumans = cum + int(parts[index])
     multans = cum * int(parts[index])
-
     print(f"{expected}:{parts}[{index}] -> sum:{sumans} - mult:{multans}")
-
     if sumans == expected:
         result = sumans
     if multans == expected:
@@ -37,12 +32,15 @@ def equate(index, parts, expected, cum):
         if(sumans == expected):
             print(f"allebij zijn ze expected: {expected } : {parts}", file=sys.stderr)
     if sumans < expected:
-        result = equate(index=index+1, parts=parts, expected=expected, cum=sumans)
+        temp = equate(index=index+1, parts=parts, expected=expected, cum=sumans)
+        if temp == expected:
+            result = temp
     if multans < expected:
-        result = equate(index=index+1, parts=parts, expected=expected, cum=multans)
-
+        temp = equate(index=index+1, parts=parts, expected=expected, cum=multans)
+        if temp == expected:
+            result = temp
+    print(f"returning {result=}, {expected=}, {cum=}")
     return result
-
 
 with open("test.txt", "r") as f:
     result = 0
@@ -51,13 +49,18 @@ with open("test.txt", "r") as f:
         answer = int(answer)
         questions = qs.strip().split()
         sumresult = equate(index=0, parts=questions, expected=answer, cum=0)
-        multresult = equate(0, questions, answer, SUM)
-        if multresult == None and sumresult == None:
-            print("Allebij fout", file=sys.stderr)
-        elif multresult != None:
-            result += multresult
-        else:
+        if sumresult == answer:
             result += sumresult
+        # multresult = equate(0, questions, answer, SUM)
+        # if multresult == None and sumresult == None:
+        #     print(f"Allebij fout: {line}", file=sys.stderr)
+        # elif multresult != None:
+        #     result += multresult
+        # else:
+        #     result += sumresult
         print(f"Part 1 = {result}")
+
+ 
+
 
 
