@@ -23,7 +23,7 @@ print(len(posmap))
 
 def inmap(inmapnode):
     x,y = inmapnode[0], inmapnode[1]
-    return x >= 0 and y >= 0 and x < mapsize and y < mapsize
+    return x >= 0 and y >= 0 and x <= mapsize and y <= mapsize
 
 
 def calculateanti(node, othernode):
