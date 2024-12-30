@@ -35,8 +35,7 @@ while True:
     if backid <= frontid:
         break
 
-    temp = fragmented[backid]
-    fragmented[frontid] = temp
+    fragmented[frontid] = fragmented[backid]
     fragmented[backid] = '.'
     backid -= 1
 
