@@ -1,8 +1,3 @@
-#find the path
-# as long as possible
-# even, gradual, uphill slope
-# starts at 0 ends at 9, increase of 1 each step
-# no diagonals
 
 guide = []
 starters = {}
@@ -43,30 +38,20 @@ def calc_path(path, i, j):
     if last_val == "9":
         return path
     nextnext = find_next(path[-1][0], path[-1][1])
-    print(f"{nextnext=}")
     for next in nextnext:
         arg = path.copy()
         arg.append(next)
         new_path = calc_path(arg, i, j)
-        print(f"{new_path=}")
         if new_path != None:
             starters[(i, j)].append(new_path)
-
-    print("\n")
-
-
-
 
 
 for x,y in starters.keys():
 
     next:list = find_next(x, y)
-    print(f"next={next}")
 
     for n in next:
-        print(f"{n=}")
         new_path = calc_path([n], x, y)
-        print(f"new_path={new_path}")
         if new_path != None:
             starters[(x, y)].append(new_path)
 
@@ -77,12 +62,9 @@ def count_score(trail_heads):
     return len(counter)
 
 
-print(f"{starters=}")
 counter = 0
 counter2 = 0
 for starter in starters.keys():
-    # print([guide[i][j] for i, j in set([trail[-1] for trail in starters[starter]])])
-    # print([x for x in set([trail[-1] for trail in starters[starter]])])
     counter += count_score(starters[starter])
     counter2 += len(starters[starter])
 
