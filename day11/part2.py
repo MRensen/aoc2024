@@ -1,49 +1,35 @@
-import sys
-from collections import Counter
-
-# read numbers
-numbers = []
 
 # group the numbers
 counters = {}
-# make the groups
-for i in range(10):
-    counters[i] = 0
 
 
-
+# read numbers
 with open('input.txt') as f:
     numbers = [int(x) for x in f.readline().split()]
-print(numbers)
+    for num in numbers:
+        # Put numbers in a map and count how often they would appear in the actual list of numbers
+        # Assumption: there are no duplicate values in the input
+        counters[num] = 1
+
 
 # apply the rules, always return list
 def do_magic(number):
     if number == 0:
         return [1]
     elif len(str(number)) % 2 == 0:
-        first = int(str(number)[:len(str(number))//2])
-        second = int(str(number)[len(str(number))//2:])
-        # print(f" full: {number}, first: {first}, second: {second}")
+        num_len = len(str(number))//2
+        first = int(str(number)[:num_len])
+        second = int(str(number)[num_len:])
         return [first, second]
     else:
         return [number * 2024]
 
 for i in range(75):
     print("Working on step ", i)
-    new_numbers = []
-    new_counters = {}
-    # for i in range(10):
-    #     new_counters[i] = 0
-    for number in numbers:
-        magic_numbers = do_magic(number)
-        for magic_number in magic_numbers:
-            if not magic_number in new_counters.keys():
-                new_counters[magic_number] = 0
-            new_counters[magic_number] += 1
-            # if 0 <= magic_number < 10:
-            #     new_counters[magic_number] += 1
-            # else:
-            #     new_numbers.append(magic_number)
+    new_counters = {} # temporary map, to not contaminate the loop
+    # Go through all keys in the map and apply the magic.
+    # Put the result of the magic as a new key and give it the value of the original key
+    # or add it if it is already a key with a value.
     for number, amount in counters.items():
         if amount != 0:
             magic_numbers = do_magic(number)
@@ -53,19 +39,8 @@ for i in range(75):
             if not magic_number in new_counters.keys():
                 new_counters[magic_number] = 0
             new_counters[magic_number] += amount
-            # if 0 <= magic_number < 10:
-            #     new_counters[magic_number] += amount
-            # else:
-            #     for i in range(amount):
-            #         new_numbers.append(magic_number)
-
-    # add up the new values to the totals
-    numbers = new_numbers
     counters = new_counters
 
-    # print(f"Step {i} : {len(numbers)} numbers")
-    # print("------")
-    # print(numbers)
 
 
 
